@@ -26,7 +26,7 @@ class ArtNetSimple : public ArtPollReplyHandler {
     // void begin(WiFiClass* network, WiFiUDP* udp);
     // void end();
     void setNetwork(WiFiClass* network, WiFiUDP* udp);
-    // setCallback(ArtNetDmxCallback callback);
+    inline void setCallback(ArtDmxCallback artDmxCallback) { _artDmxCallback = artDmxCallback; };
     ArtNetStatus parse();
 
    private:
@@ -44,6 +44,7 @@ class ArtNetSimple : public ArtPollReplyHandler {
 
     uint8_t _buffer[BUFFER_SIZE] = {0};
     size_t _packetSize;
+    ArtDmxCallback _artDmxCallback = nullptr;
 
     WiFiClass* _network = nullptr;
     WiFiUDP* _udp = nullptr;

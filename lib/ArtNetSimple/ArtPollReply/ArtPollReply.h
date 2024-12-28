@@ -19,9 +19,9 @@ enum class ART_STATUS1_ADDRESS_AUTHORITY : uint8_t {
 };
 
 enum class ART_PORT_TYPE_DIRECTION : uint8_t {
-    INPUT_OUTPUT = 0xC0,
-    INPUT_ONLY = 0x80,
-    OUTPUT_ONLY = 0x40,
+    SEND_AND_RECEIVE = 0xC0,
+    RECEIVE_ONLY = 0x80,  // It can output data from the Art-Net Network
+    SEND_ONLY = 0x40,     // It can input onto the Art-Net Network
 };
 enum class ART_PORT_TYPE_PROTOCOL : uint8_t {
     DALI = 0x06,
@@ -138,22 +138,22 @@ struct ArtPollReply {
     const char id[8] = "Art-Net";
     const uint16_t opCode = static_cast<uint16_t>(OpCode::PollReply);
     uint8_t ipAddress[4];
-    const uint16_t port = 0x1936;
-    const uint8_t versionInfoH = 0x00;
-    const uint8_t versionInfoL = 14;  // Version of Art-Net (???). Current version is 14
-    uint8_t
-        netSwitch;  // Bits 14-8 of the 15 bit Port-Address are encoded into the bottom 7 bits of this field. This is
-                    // used in combination with SubSwitch and SwIn[] or SwOut[] to produce the full universe address.
-    uint8_t
-        subSwitch;  //  Bits 7-4 of the 15 bit Port-Address are encoded into the bottom 4 bits of this field. This is
-                    //  used in combination with NetSwitch and SwIn[] or SwOut[] to produce the full universe address.
+    const uint16_t port = ARTNET_DEFAULT_PORT;
+    const uint8_t versionInfoH = 0;  // Major firmware version
+    const uint8_t versionInfoL = 1;  // Minor firmware version
+    uint8_t netSwitch;  // Bits 14-8 of the 15 bit Port-Address are encoded into the bottom 7 bits of this field.
+                        // This is used in combination with SubSwitch and SwIn[] or SwOut[] to produce the full
+                        // universe address.
+    uint8_t subSwitch;  // Bits 7-4 of the 15 bit Port-Address are encoded into the bottom 4 bits of this field.
+                        // This is used in combination with NetSwitch and SwIn[] or SwOut[] to produce the full
+                        // universe address.
     const uint8_t oemHi = 0x00;
     const uint8_t oem = 0xFF;
     const uint8_t ubeaVersion = 0;  // This field contains the firmware version of the User Bios Extension Area (UBEA).
                                     // If the UBEA is not programmed, this field contains zero.
     uint8_t status1;
-    uint8_t estaManLo;
-    uint8_t estaManHi;
+    const uint8_t estaManLo = 0xFF;
+    const uint8_t estaManHi = 0x7F;
     char portName[18] = "Art-Net Node";
     char longName[64] = "Generic Art-Net Node";
     char nodeReport[64] = "#0000 [12345] Dummy report";
@@ -170,15 +170,16 @@ struct ArtPollReply {
     const uint8_t spare[3] = {0};
     uint8_t style;
     uint8_t macAddress[6];
-    // uint8_t bindIp[4];
-    // uint8_t bindIndex;
-    // uint8_t status2;
-    // uint8_t goodOutputB[ARTNET_ENDPOINTS];
-    // uint8_t status3;
-    // uint8_t DefaulRespUID[6];               // MSB first (big-endian)
-    // uint8_t user[2];                        // MSB first (big-endian)
-    // uint8_t refreshRate[2] = {0x00, 0x10};  // MSB first (big-endian); Maximum refresh rate in Hertz; value between
-    // 0-44 uint8_t BackgroundQueuePolicy; uint8_t filler[10] = {0};
+    uint8_t bindIp[4];
+    uint8_t bindIndex;
+    uint8_t status2;
+    uint8_t goodOutputB[ARTNET_ENDPOINTS];
+    uint8_t status3;
+    uint8_t DefaulRespUID[6];
+    uint8_t user[2];
+    uint8_t refreshRate[2] = {0x00, 0x10};  // Maximum refresh rate in Hertz; value between 0-44
+    uint8_t BackgroundQueuePolicy;
+    uint8_t filler[10] = {0};
 };
 
 class ArtPollReplyHandler {
@@ -187,7 +188,7 @@ class ArtPollReplyHandler {
     void setUniverse(uint16_t universe15Bit);
     void setEndpoint(uint8_t portNr, uint16_t universe15Bit, ART_PORT_TYPE_DIRECTION direction,
                      ART_PORT_TYPE_PROTOCOL protocol, ART_GOOD_INPUT goodInput = ART_GOOD_INPUT::NONE,
-                     ART_GOOD_OUTPUTA goodOutputA = ART_GOOD_OUTPUTA::NONE, ArtCallback callback = nullptr);
+                     ART_GOOD_OUTPUTA goodOutputA = ART_GOOD_OUTPUTA::NONE);
     // STATUS1
     inline void setIndicator(ART_STATUS1_INDICATOR_STATE indicator) {
         _artPollReply.status1 = (_artPollReply.status1 & 0x3F) | static_cast<uint8_t>(indicator);
@@ -204,6 +205,7 @@ class ArtPollReplyHandler {
     inline void setMacAddress(uint8_t (&macAddress)[6]) {
         memcpy(_artPollReply.macAddress, macAddress, sizeof(_artPollReply.macAddress));
     }
+    // ArtDmxCallback _callback = nullptr;
 
    private:
     ArtPollReply _artPollReply;

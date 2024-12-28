@@ -83,26 +83,15 @@ ArtNetStatus ArtNetSimple::handleDmx() {
     }
     ArtDmx* artDmx = reinterpret_cast<ArtDmx*>(_buffer);
     uint16_t dmxLength = (static_cast<uint16_t>(artDmx->lengthHi) << 8) | artDmx->lengthLo;
+    uint16_t universe15Bit = static_cast<uint16_t>(artDmx->net) << 8 | artDmx->subUni;
 
     if (_packetSize != sizeof(ArtHeader) + 6 + dmxLength) {  // Find better solution than hardcode 6
         return ArtNetStatus::PACKET_SIZE_MISMATCH;
     }
 
-    Serial.print("Length: ");
-    Serial.println(dmxLength);
-    Serial.print("Physical: ");
-    Serial.println(artDmx->physical);
-    Serial.print("Sequence: ");
-    Serial.println(artDmx->sequence);
-    Serial.print("Net: ");
-    Serial.println(artDmx->net);
-    Serial.print("SubUni: ");
-    Serial.println(artDmx->subUni);
-
-    // Serial.print("Data: ");
-
-    // Serial.print(artDmx->sequence);
-    // Serial.print(" ");
+    if (_artDmxCallback) {
+        _artDmxCallback(artDmx->data, dmxLength, universe15Bit, artDmx->sequence);
+    }
 
     return ArtNetStatus::OK;
 
@@ -159,9 +148,9 @@ void ArtNetSimple::sendPacket(uint8_t* packet, size_t size) {
 
 uint32_t ArtNetSimple::convertIpAddress(IPAddress ipAddress) {
     uint32_t ip = 0;
-    ip |= static_cast<uint32_t>(ipAddress[0]) << 24;
-    ip |= static_cast<uint32_t>(ipAddress[1]) << 16;
-    ip |= static_cast<uint32_t>(ipAddress[2]) << 8;
-    ip |= static_cast<uint32_t>(ipAddress[3]);
+    ip |= static_cast<uint32_t>(ipAddress[3]) << 24;
+    ip |= static_cast<uint32_t>(ipAddress[2]) << 16;
+    ip |= static_cast<uint32_t>(ipAddress[1]) << 8;
+    ip |= static_cast<uint32_t>(ipAddress[0]);
     return ip;
 }

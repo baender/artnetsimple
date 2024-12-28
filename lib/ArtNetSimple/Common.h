@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-using ArtCallback = void (*)(const uint8_t* data, uint16_t size);
+using ArtDmxCallback = void (*)(const uint8_t* data, uint16_t size, uint16_t universe, uint8_t sequence);
 
 constexpr char ARTNET_ID[] = "Art-Net";
 constexpr uint16_t ARTNET_DEFAULT_PORT = 6454;  // 0x1936

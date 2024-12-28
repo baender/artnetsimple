@@ -7,26 +7,27 @@ void ArtPollReplyHandler::setUniverse(uint16_t universe15Bit) {
 
 void ArtPollReplyHandler::setEndpoint(uint8_t portNr, uint16_t universe15Bit, ART_PORT_TYPE_DIRECTION direction,
                                       ART_PORT_TYPE_PROTOCOL protocol, ART_GOOD_INPUT goodInput,
-                                      ART_GOOD_OUTPUTA goodOutputA, ArtCallback callback) {
+                                      ART_GOOD_OUTPUTA goodOutputA) {
     if (portNr >= ARTNET_ENDPOINTS) {
         return;
     }
+    // _callback = callback;
     _artPollReply.portTypes[portNr] = static_cast<uint8_t>(direction) | static_cast<uint8_t>(protocol);
     _artPollReply.goodInput[portNr] = static_cast<uint8_t>(goodInput);
     _artPollReply.goodOutputA[portNr] = static_cast<uint8_t>(goodOutputA);
     uint8_t universe4Bit = (universe15Bit + portNr) & 0x0F;
     switch (direction) {
-        case ART_PORT_TYPE_DIRECTION::INPUT_ONLY:
+        case ART_PORT_TYPE_DIRECTION::SEND_ONLY:
             _artPollReply.swIn[portNr] = universe4Bit;
-            _artPollReply.swOut[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
+            // _artPollReply.swOut[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
             // _callbacks[portNr] = callback;
             break;
-        case ART_PORT_TYPE_DIRECTION::OUTPUT_ONLY:
-            _artPollReply.swIn[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
+        case ART_PORT_TYPE_DIRECTION::RECEIVE_ONLY:
+            // _artPollReply.swIn[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
             _artPollReply.swOut[portNr] = universe4Bit;
             // _callbacks[portNr] = callback;
             break;
-        case ART_PORT_TYPE_DIRECTION::INPUT_OUTPUT:
+        case ART_PORT_TYPE_DIRECTION::SEND_AND_RECEIVE:
             _artPollReply.swIn[portNr] = universe4Bit;
             _artPollReply.swOut[portNr] = universe4Bit;
             // _callbacks[portNr] = callback;
