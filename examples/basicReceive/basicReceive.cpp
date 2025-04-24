@@ -1,48 +1,3 @@
-# ArtNetSimple
-
-ArtNetSimple is a lightweight library that brings ArtNet protocol support to Arduino-like platforms. Designed with flexibility in mind, this library allows you to dynamically switch between different network interfaces (e.g., from WiFi to Ethernet) during runtime—making it a versatile choice for modern ArtNet projects. 
-
-Currently, the library is in its early stages of development and has been tested primarily on the ESP32 platform. Contributions and feedback are welcome to help expand its functionality and compatibility.
-
----
-
-## Features
-
-- **Dynamic Network Switching**: Seamlessly move between network types at runtime.
-- **ArtNet Protocol Support**: Basic ArtNet features are implemented to facilitate DMX lighting control and data reception.
-- **ESP32 Support**: Tested on ESP32, with potential for compatibility with other Arduino-like platforms.
-- **Lightweight & Simple**: Designed to be straightforward to use and easy to integrate into your projects.
-
----
-
-## Getting Started
-
-### Installation
-
-1. Clone or download the repository.
-2. Place the library folder in your libraries directory.
-3. Include `ArtNetSimple.h` in your project. 
-
----
-
-## Minimal Example
-
-Here’s a basic example of how to use the library for receiving ArtNet Data.
-Create a `secrets.h` file in the `include` folder and add the following content:
-
-```cpp
-#ifndef _SECRETS_H_
-#define _SECRETS_H_
-
-constexpr char WIFI_SSID[] = "YOUR_SSID";
-constexpr char WIFI_PASSWORD[] = "YOUR_PASSWORD";
-
-#endif
-```
-
-Then use the following code in your `src/main.cpp`:
-
-```cpp
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
@@ -89,7 +44,7 @@ void configureArtNet() {
     artnet.setUniverse(universe15Bit);
     artnet.setEndpoint(0, universe15Bit, ART_PORT_TYPE_DIRECTION::RECEIVE_ONLY, ART_PORT_TYPE_PROTOCOL::DMX512,
                        ART_GOOD_INPUT::NONE, ART_GOOD_OUTPUTA::CONVERT_TO_DMX512);
-    artnet.setNodeName("ArtNet Node", "ArtNet Node by Baender");
+    artnet.setNodeName("TriggerCube", "TriggerCube by Baender");
 }
 
 void setup() {
@@ -130,8 +85,3 @@ void loop() {
     }
     delay(1);
 }
-```
-
-## License
-
-This project is licensed under the MIT License, making it open and permissive. Feel free to use, modify, and distribute the library, as long as proper credit is given. See the [LICENSE](LICENSE) file for details.

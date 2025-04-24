@@ -1,0 +1,31 @@
+{
+    "name": "ArtNet Simple",
+    "version": "0.1.0",
+    "description": "A library that lets you use ArtNet on your microcontroller.",
+    "keywords": [
+        "artnet",
+        "esp32"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/baender/artnetsimple"
+    },
+    "authors": [
+        {
+            "name": "Daniel Beiter",
+            "email": "daniel.beiter@gmx.at",
+            "url": "https://github.com/baender",
+            "maintainer": true
+        }
+    ],
+    "frameworks": [
+        "arduino"
+    ],
+    "platforms": [
+        "espressif32"
+    ],
+    "examples": [
+        "examples/basicReceive"
+    ],
+    "license": "MIT"
+}
