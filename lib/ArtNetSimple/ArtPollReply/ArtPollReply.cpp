@@ -19,18 +19,13 @@ void ArtPollReplyHandler::setEndpoint(uint8_t portNr, uint16_t universe15Bit, AR
     switch (direction) {
         case ART_PORT_TYPE_DIRECTION::SEND_ONLY:
             _artPollReply.swIn[portNr] = universe4Bit;
-            // _artPollReply.swOut[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
-            // _callbacks[portNr] = callback;
             break;
         case ART_PORT_TYPE_DIRECTION::RECEIVE_ONLY:
-            // _artPollReply.swIn[portNr] = universe4Bit;  // DELETE AFTER DEBUGGING
             _artPollReply.swOut[portNr] = universe4Bit;
-            // _callbacks[portNr] = callback;
             break;
         case ART_PORT_TYPE_DIRECTION::SEND_AND_RECEIVE:
             _artPollReply.swIn[portNr] = universe4Bit;
             _artPollReply.swOut[portNr] = universe4Bit;
-            // _callbacks[portNr] = callback;
             break;
     }
 }
@@ -49,29 +44,3 @@ void ArtPollReplyHandler::setNodeName(const char* shortName, const char* longNam
     strncpy(_artPollReply.longName, longName, sizeof(_artPollReply.longName) - 1);
     _artPollReply.longName[sizeof(_artPollReply.longName) - 1] = '\0';
 }
-
-// PORT TYPES
-// void ArtPollReplyHandler::setDirection(uint8_t portNr,
-// ART_PORT_TYPE_DIRECTION direction) {
-//     if (portNr >= ARTNET_MAX_PORTS) { return; }
-//     uint8_t value = _artPollReply.portTypes[portNr];
-//     value = (value & 0x3F) | static_cast<uint8_t>(direction);
-//     _artPollReply.portTypes[portNr] = value;
-// }
-// void ArtPollReplyHandler::setProtocol(uint8_t portNr, ART_PORT_TYPE_PROTOCOL
-// protocol) {
-//     if (portNr >= ARTNET_MAX_PORTS) { return; }
-//     uint8_t value = _artPollReply.portTypes[portNr];
-//     value = (value & 0xC0) | static_cast<uint8_t>(protocol);
-//     _artPollReply.portTypes[portNr] = value;
-// }
-
-// void ArtPollReplyHandler::setSwIn(uint8_t portNr, uint16_t universe15Bit) {
-//     if (portNr >= ARTNET_MAX_PORTS) { return; }
-//     _artPollReply.swIn[portNr] = universe15Bit & 0x0F;
-// }
-
-// void ArtPollReplyHandler::setSwOut(uint8_t portNr, uint16_t universe15Bit) {
-//     if (portNr >= ARTNET_MAX_PORTS) { return; }
-//     _artPollReply.swOut[portNr] = universe15Bit & 0x0F;
-// }
